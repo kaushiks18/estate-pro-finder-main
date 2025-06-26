@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://kaushiks18.github.io/estate-pro-finder-main",
   "scripts": {
     "start": "next start",
     "dev": "vite",
@@ -12,7 +13,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build:gh-pages",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
