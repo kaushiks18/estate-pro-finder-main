@@ -137,7 +137,11 @@ const Buy = () => {
           alt={property.title}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <Button variant="ghost" size="icon" className="absolute top-2 right-2 bg-white/80 hover:bg-white">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+        >
           <Heart className="h-4 w-4" />
         </Button>
         {property.featured && (
@@ -174,7 +178,9 @@ const Buy = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+          <Button 
+            className="flex-1 bg-blue-600 hover:bg-blue-700"
+          >
             <Phone className="h-4 w-4 mr-2" />
             Contact Agent
           </Button>
@@ -202,7 +208,6 @@ const Buy = () => {
                 <Link to="/buy" className="text-blue-600 hover:text-blue-700 font-medium border-b-2 border-blue-600">Buy</Link>
                 <Link to="/rent" className="text-gray-700 hover:text-blue-600 font-medium">Rent</Link>
                 <Link to="/commercial" className="text-gray-700 hover:text-blue-600 font-medium">Commercial</Link>
-                <Link to="/projects" className="text-gray-700 hover:text-blue-600 font-medium">Projects</Link>
                 <Link to="/agents" className="text-gray-700 hover:text-blue-600 font-medium">Agents</Link>
               </nav>
             </div>
@@ -358,7 +363,6 @@ const Buy = () => {
                 <li><Link to="/buy" className="hover:text-white">Buy Property</Link></li>
                 <li><Link to="/rent" className="hover:text-white">Rent Property</Link></li>
                 <li><Link to="/commercial" className="hover:text-white">Commercial</Link></li>
-                <li><Link to="/projects" className="hover:text-white">New Projects</Link></li>
               </ul>
             </div>
             <div>

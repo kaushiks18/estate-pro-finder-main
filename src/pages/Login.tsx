@@ -57,7 +57,6 @@ const Login = () => {
                 <Link to="/buy" className="text-gray-700 hover:text-blue-600 font-medium">Buy</Link>
                 <Link to="/rent" className="text-gray-700 hover:text-blue-600 font-medium">Rent</Link>
                 <Link to="/commercial" className="text-gray-700 hover:text-blue-600 font-medium">Commercial</Link>
-                <Link to="/projects" className="text-gray-700 hover:text-blue-600 font-medium">Projects</Link>
                 <Link to="/agents" className="text-gray-700 hover:text-blue-600 font-medium">Agents</Link>
               </nav>
             </div>

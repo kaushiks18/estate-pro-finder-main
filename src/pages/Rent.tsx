@@ -146,7 +146,11 @@ const Rent = () => {
           alt={property.title}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <Button variant="ghost" size="icon" className="absolute top-2 right-2 bg-white/80 hover:bg-white">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+        >
           <Heart className="h-4 w-4" />
         </Button>
         {property.featured && (
@@ -186,7 +190,9 @@ const Rent = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button className="flex-1 bg-green-600 hover:bg-green-700">
+          <Button 
+            className="flex-1 bg-green-600 hover:bg-green-700"
+          >
             <Phone className="h-4 w-4 mr-2" />
             Contact Owner
           </Button>
@@ -214,7 +220,6 @@ const Rent = () => {
                 <Link to="/buy" className="text-gray-700 hover:text-blue-600 font-medium">Buy</Link>
                 <Link to="/rent" className="text-blue-600 hover:text-blue-700 font-medium border-b-2 border-blue-600">Rent</Link>
                 <Link to="/commercial" className="text-gray-700 hover:text-blue-600 font-medium">Commercial</Link>
-                <Link to="/projects" className="text-gray-700 hover:text-blue-600 font-medium">Projects</Link>
                 <Link to="/agents" className="text-gray-700 hover:text-blue-600 font-medium">Agents</Link>
               </nav>
             </div>
@@ -370,7 +375,6 @@ const Rent = () => {
                 <li><Link to="/buy" className="hover:text-white">Buy Property</Link></li>
                 <li><Link to="/rent" className="hover:text-white">Rent Property</Link></li>
                 <li><Link to="/commercial" className="hover:text-white">Commercial</Link></li>
-                <li><Link to="/projects" className="hover:text-white">New Projects</Link></li>
               </ul>
             </div>
             <div>

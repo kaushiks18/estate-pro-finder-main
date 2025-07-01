@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 
 interface Property {
   id: string;
@@ -92,6 +92,7 @@ const Index = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchProperties();
@@ -144,12 +145,6 @@ const Index = () => {
                   Commercial
                 </Link>
                 <Link
-                  to="/projects"
-                  className="text-gray-700 hover:text-blue-600 font-medium"
-                >
-                  Projects
-                </Link>
-                <Link
                   to="/agents"
                   className="text-gray-700 hover:text-blue-600 font-medium"
                 >
@@ -157,20 +152,79 @@ const Index = () => {
                 </Link>
               </nav>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <Link to="/post-property">
-                <Button className="bg-orange-500 hover:bg-orange-600">
-                  Post Property FREE
+                <Button className="bg-orange-500 hover:bg-orange-600 text-sm md:text-base">
+                  <span className="hidden sm:inline">Post Property FREE</span>
+                  <span className="sm:hidden">List Property</span>
                 </Button>
               </Link>
               <Link to="/login">
-                <Button variant="outline">Login</Button>
+                <Button variant="outline" className="hidden sm:inline-flex">Login</Button>
               </Link>
               <Link to="/agent-login">
-                <Button variant="outline">Agent Login</Button>
+                <Button variant="outline" className="hidden md:inline-flex">Agent Login</Button>
               </Link>
+              <Link to="/customer-dashboard">
+                <Button variant="outline" className="hidden lg:inline-flex">Customer Dashboard</Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
+          
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t bg-white">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <Link
+                  to="/buy"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Buy
+                </Link>
+                <Link
+                  to="/rent"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Rent
+                </Link>
+                <Link
+                  to="/commercial"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Commercial
+                </Link>
+                <Link
+                  to="/agents"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Agents
+                </Link>
+                <div className="border-t pt-2 space-y-1">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Login</Button>
+                  </Link>
+                  <Link to="/agent-login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Agent Login</Button>
+                  </Link>
+                  <Link to="/customer-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Customer Dashboard</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -190,13 +244,13 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/buy">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto">
                 Browse Properties
               </Button>
             </Link>
             <Link to="/post-property">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
-                List Your Property
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 w-full sm:w-auto font-semibold">
+                🏠 List Your Property
               </Button>
             </Link>
           </div>
@@ -221,6 +275,19 @@ const Index = () => {
               Showing {filteredProperties.length} result{filteredProperties.length !== 1 ? 's' : ''} for "{searchTerm}"
             </p>
           )}
+        </div>
+      </div>
+
+      {/* Call to Action */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-lg p-6 text-white text-center">
+          <h2 className="text-2xl font-bold mb-2">Own a Property? List it Today!</h2>
+          <p className="mb-4 opacity-90">Join thousands of property owners who trust EstatePro to find the right tenants and buyers</p>
+          <Link to="/post-property">
+            <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100 font-semibold">
+              🏠 List Your Property FREE
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -271,7 +338,7 @@ const Index = () => {
                       loading="lazy"
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 mb-4">
                     <p className="text-xl font-bold text-green-600">
                       ${property.price.toLocaleString()}
                     </p>
@@ -280,7 +347,7 @@ const Index = () => {
                       {property.bedrooms} Bedroom{property.bedrooms !== 1 ? 's' : ''}
                     </p>
                   </div>
-                  <Link to={`/property/${property.id}`} className="block mt-4">
+                  <Link to={`/property/${property.id}`} className="block">
                     <Button className="w-full bg-blue-600 hover:bg-blue-700">
                       View Details
                     </Button>

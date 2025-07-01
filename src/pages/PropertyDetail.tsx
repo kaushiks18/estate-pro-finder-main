@@ -1,357 +1,360 @@
-
-import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Heart, Share2, MapPin, Bed, Bath, Square, Calendar, Car, Wifi, Dumbbell, Shield, Phone, Mail, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
 
-const PropertyDetail = () => {
+// Mock property data
+const mockProperty = {
+  id: "1",
+  title: "Modern Apartment",
+  location: "Downtown",
+  price: 450000,
+  bedrooms: 2,
+  bathrooms: 2,
+  area: 1200,
+  image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop&crop=center",
+  images: [
+    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop&crop=center",
+    "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&h=600&fit=crop&crop=center",
+    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop&crop=center"
+  ],
+  description: "A beautiful modern apartment in the heart of downtown with stunning city views.",
+  amenities: ["Gym", "Pool", "Parking", "Security", "Balcony", "WiFi"],
+  floorPlan: "/placeholder.svg",
+  agent: {
+    name: "John Doe",
+    phone: "+1 234 567 890",
+    email: "john@estatepro.com",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  locationMap: "https://maps.google.com/?q=Downtown"
+};
+
+const paymentOptions = [
+  { label: "Token Amount", value: "token", amount: 10000 },
+  { label: "Booking Amount", value: "booking", amount: 45000 },
+  { label: "Full Payment", value: "full", amount: 450000 },
+  { label: "EMI Option", value: "emi", amount: 37500 }
+];
+
+function PropertyDetail() {
   const { id } = useParams();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const property = mockProperty;
+  const [selectedTab, setSelectedTab] = useState("overview");
+  const [paymentType, setPaymentType] = useState("token");
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showVisitDialog, setShowVisitDialog] = useState(false);
+  const [visitDate, setVisitDate] = useState<Date | undefined>();
+  const [visitTime, setVisitTime] = useState("");
+  const [visitName, setVisitName] = useState("");
+  const [visitPhone, setVisitPhone] = useState("");
+  const [visitSuccess, setVisitSuccess] = useState(false);
 
-  // Mock property data
-  const property = {
-    id: 1,
-    title: "Luxury 3BHK Apartment in Prime Location",
-    location: "Banjara Hills, Hyderabad",
-    price: "₹1.2 Cr",
-    pricePerSqft: "₹6,486",
-    area: "1850 sq.ft",
-    bedrooms: 3,
-    bathrooms: 2,
-    parking: 2,
-    floor: "5th Floor",
-    totalFloors: 12,
-    age: "Ready to Move",
-    type: "Apartment",
-    facing: "North-East",
-    furnished: "Semi-Furnished",
-    images: [
-      "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop",
-    ],
-    description: "This stunning 3BHK apartment offers modern living at its finest. Located in the prestigious Banjara Hills area, this property features contemporary design, premium finishes, and world-class amenities. Perfect for families looking for comfort and luxury in a prime location.",
-    amenities: [
-      "Swimming Pool", "Gym", "Parking", "Security", "Power Backup", 
-      "WiFi", "Garden", "Kids Play Area", "Elevator", "Water Supply"
-    ],
-    agent: {
-      name: "Rajesh Kumar",
-      phone: "+91 9876543210",
-      email: "rajesh@estatepro.com",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+  const handleScheduleVisit = () => {
+    if (visitDate && visitTime && visitName && visitPhone) {
+      setVisitSuccess(true);
+      setTimeout(() => {
+        setShowVisitDialog(false);
+        setVisitSuccess(false);
+        setVisitDate(undefined);
+        setVisitTime("");
+        setVisitName("");
+        setVisitPhone("");
+      }, 2000);
     }
   };
 
-  const handleImageChange = (index: number) => {
-    setCurrentImageIndex(index);
-  };
+  const currentPaymentOption = paymentOptions.find(opt => opt.value === paymentType);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <Link to="/" className="text-2xl font-bold text-blue-600">
-                EstatePro
-              </Link>
-              <nav className="hidden md:flex space-x-6">
-                <Link to="/buy" className="text-gray-700 hover:text-blue-600 font-medium">Buy</Link>
-                <Link to="/rent" className="text-gray-700 hover:text-blue-600 font-medium">Rent</Link>
-                <Link to="/commercial" className="text-gray-700 hover:text-blue-600 font-medium">Commercial</Link>
-                <Link to="/projects" className="text-gray-700 hover:text-blue-600 font-medium">Projects</Link>
-                <Link to="/agents" className="text-gray-700 hover:text-blue-600 font-medium">Agents</Link>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/post-property">
-                <Button className="bg-orange-500 hover:bg-orange-600">
-                  Post Property FREE
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline">Login / Register</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Property Details */}
-      <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
-          <Link to="/" className="hover:text-blue-600">Home</Link>
-          <span>/</span>
-          <Link to="/properties" className="hover:text-blue-600">Properties</Link>
-          <span>/</span>
-          <span>Property Details</span>
-        </div>
-
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link to="/" className="inline-flex items-center text-blue-600 hover:text-blue-700">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Properties
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b px-4 py-3">
+        <div className="container mx-auto">
+          <Link to="/" className="text-blue-600 hover:text-blue-800 font-medium">
+            ← Back to Properties
           </Link>
         </div>
+      </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Image Gallery */}
-            <Card>
-              <CardContent className="p-0">
-                <div className="relative">
-                  <img
-                    src={property.images[currentImageIndex]}
-                    alt={property.title}
-                    className="w-full h-96 object-cover rounded-t-lg"
-                  />
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <Button variant="ghost" size="icon" className="bg-white/80 hover:bg-white">
-                      <Heart className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="bg-white/80 hover:bg-white">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex gap-2 overflow-x-auto">
-                    {property.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Property ${index + 1}`}
-                        className={`w-20 h-20 object-cover rounded cursor-pointer border-2 ${
-                          currentImageIndex === index ? 'border-blue-500' : 'border-gray-200'
-                        }`}
-                        onClick={() => handleImageChange(index)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Property Info */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{property.title}</h1>
-                    <div className="flex items-center text-gray-600 mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{property.location}</span>
-                    </div>
-                    <div className="flex gap-2 mb-4">
-                      <Badge variant="secondary">{property.type}</Badge>
-                      <Badge variant="outline">{property.age}</Badge>
-                      <Badge variant="outline">{property.furnished}</Badge>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-blue-600">{property.price}</div>
-                    <div className="text-sm text-gray-600">{property.pricePerSqft}/sq.ft</div>
-                  </div>
-                </div>
-
-                {/* Property Features */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="flex items-center">
-                    <Bed className="h-5 w-5 text-gray-600 mr-2" />
-                    <div>
-                      <div className="font-semibold">{property.bedrooms}</div>
-                      <div className="text-sm text-gray-600">Bedrooms</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Bath className="h-5 w-5 text-gray-600 mr-2" />
-                    <div>
-                      <div className="font-semibold">{property.bathrooms}</div>
-                      <div className="text-sm text-gray-600">Bathrooms</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Square className="h-5 w-5 text-gray-600 mr-2" />
-                    <div>
-                      <div className="font-semibold">{property.area}</div>
-                      <div className="text-sm text-gray-600">Super Area</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Car className="h-5 w-5 text-gray-600 mr-2" />
-                    <div>
-                      <div className="font-semibold">{property.parking}</div>
-                      <div className="text-sm text-gray-600">Parking</div>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator className="my-6" />
-
-                {/* Description */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Description</h3>
-                  <p className="text-gray-600 leading-relaxed">{property.description}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Property Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Property Details</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Property Type:</span>
-                    <span className="font-medium">{property.type}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Floor:</span>
-                    <span className="font-medium">{property.floor}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Floors:</span>
-                    <span className="font-medium">{property.totalFloors}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Facing:</span>
-                    <span className="font-medium">{property.facing}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Furnished Status:</span>
-                    <span className="font-medium">{property.furnished}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Age of Property:</span>
-                    <span className="font-medium">{property.age}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Amenities */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Amenities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                      <span className="text-sm">{amenity}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+      <div className="container mx-auto py-8 px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Property Images */}
+          <div className="space-y-4">
+            <div className="relative overflow-hidden rounded-lg">
+              <img 
+                src={property.image} 
+                alt={property.title} 
+                className="w-full h-96 object-cover"
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {property.images.map((img, i) => (
+                <img 
+                  key={i} 
+                  src={img} 
+                  alt={`View ${i + 1}`} 
+                  className="w-full h-24 object-cover rounded border hover:opacity-80 cursor-pointer" 
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Property Details */}
           <div className="space-y-6">
-            {/* Contact Agent */}
-            <Card className="sticky top-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">{property.title}</h1>
+              <p className="text-lg text-gray-600 mt-1">{property.location}</p>
+              <div className="flex items-center gap-4 mt-4">
+                <span className="text-3xl font-bold text-green-600">
+                  ${property.price.toLocaleString()}
+                </span>
+                <div className="flex gap-2">
+                  <Badge variant="secondary">{property.bedrooms} Beds</Badge>
+                  <Badge variant="secondary">{property.bathrooms} Baths</Badge>
+                  <Badge variant="secondary">{property.area} sqft</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Agent Info */}
+            <Card>
               <CardHeader>
                 <CardTitle>Contact Agent</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center mb-4">
-                  <img
-                    src={property.agent.image}
-                    alt={property.agent.name}
-                    className="w-12 h-12 rounded-full mr-3"
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={property.agent.avatar} 
+                    alt={property.agent.name} 
+                    className="w-12 h-12 rounded-full"
                   />
-                  <div>
+                  <div className="flex-1">
                     <div className="font-semibold">{property.agent.name}</div>
-                    <div className="text-sm text-gray-600">Real Estate Agent</div>
+                    <div className="text-sm text-gray-600">{property.agent.email}</div>
                   </div>
-                </div>
-                <div className="space-y-3">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call Agent
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Email Agent
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    WhatsApp
-                  </Button>
-                </div>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-2">Get instant updates</div>
-                  <div className="text-xs text-gray-500">
-                    📞 {property.agent.phone}<br/>
-                    📧 {property.agent.email}
-                  </div>
+                  <a href={`tel:${property.agent.phone}`}>
+                    <Button variant="outline" size="sm">Call Now</Button>
+                  </a>
                 </div>
               </CardContent>
             </Card>
 
-            {/* EMI Calculator */}
+            {/* Payment Options */}
             <Card>
               <CardHeader>
-                <CardTitle>EMI Calculator</CardTitle>
+                <CardTitle>Payment Options</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600">Loan Amount</label>
-                    <div className="text-lg font-semibold">₹96 Lac</div>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Monthly EMI</label>
-                    <div className="text-lg font-semibold text-blue-600">₹85,432</div>
-                  </div>
-                  <Button variant="outline" className="w-full">
-                    Calculate EMI
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Similar Properties */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Similar Properties</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[1, 2].map((item) => (
-                    <div key={item} className="flex gap-3 border-b border-gray-100 pb-3 last:border-0">
-                      <img
-                        src="https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=60&fit=crop"
-                        alt="Property"
-                        className="w-16 h-12 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">2BHK Apartment</div>
-                        <div className="text-xs text-gray-600">Gachibowli</div>
-                        <div className="text-sm font-semibold text-blue-600">₹85 Lac</div>
-                      </div>
-                    </div>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-2">
+                  {paymentOptions.map(opt => (
+                    <Button 
+                      key={opt.value} 
+                      variant={paymentType === opt.value ? "default" : "outline"} 
+                      onClick={() => setPaymentType(opt.value)}
+                      className="h-auto p-3 flex flex-col items-center"
+                    >
+                      <div className="font-medium">{opt.label}</div>
+                      <div className="text-sm">${opt.amount.toLocaleString()}</div>
+                    </Button>
                   ))}
                 </div>
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700" 
+                  onClick={() => setShowPaymentDialog(true)}
+                >
+                  Pay {currentPaymentOption?.label} - ${currentPaymentOption?.amount.toLocaleString()}
+                </Button>
+                <Link to={`/payment?property=${property.id}&plan=${paymentType}`}>
+                  <Button variant="outline" className="w-full mt-2">
+                    Go to Advanced Payment Page
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Visit Scheduling */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Schedule a Visit</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                  onClick={() => setShowVisitDialog(true)}
+                >
+                  Book a Property Visit
+                </Button>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Property Details Tabs */}
+        <div className="mt-12">
+          <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="amenities">Amenities</TabsTrigger>
+              <TabsTrigger value="location">Location</TabsTrigger>
+              <TabsTrigger value="floorplan">Floor Plan</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="mt-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <h3 className="text-xl font-semibold mb-4">Property Description</h3>
+                  <p className="text-gray-700 leading-relaxed">{property.description}</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{property.bedrooms}</div>
+                      <div className="text-sm text-gray-600">Bedrooms</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{property.bathrooms}</div>
+                      <div className="text-sm text-gray-600">Bathrooms</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{property.area}</div>
+                      <div className="text-sm text-gray-600">Sq Ft</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">2024</div>
+                      <div className="text-sm text-gray-600">Year Built</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="amenities" className="mt-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <h3 className="text-xl font-semibold mb-4">Property Amenities</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {property.amenities.map((amenity, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <Badge variant="outline">{amenity}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="location" className="mt-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <h3 className="text-xl font-semibold mb-4">Location & Map</h3>
+                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                    <div className="text-gray-500">Interactive Map View</div>
+                  </div>
+                  <p className="mt-4 text-gray-700">
+                    Located in the heart of {property.location}, this property offers easy access to shopping, 
+                    dining, and public transportation.
+                  </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="floorplan" className="mt-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <h3 className="text-xl font-semibold mb-4">Floor Plan</h3>
+                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                    <div className="text-gray-500">Floor Plan Image</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Payment Dialog */}
+        <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Complete Payment - {currentPaymentOption?.label}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Amount:</span>
+                  <span className="text-xl font-bold text-green-600">
+                    ${currentPaymentOption?.amount.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+              <Input placeholder="Cardholder Name" />
+              <Input placeholder="Card Number" />
+              <div className="grid grid-cols-2 gap-2">
+                <Input placeholder="MM/YY" />
+                <Input placeholder="CVV" />
+              </div>
+              <Button className="w-full bg-green-600 hover:bg-green-700">
+                Pay ${currentPaymentOption?.amount.toLocaleString()}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Visit Scheduling Dialog */}
+        <Dialog open={showVisitDialog} onOpenChange={setShowVisitDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Schedule Property Visit</DialogTitle>
+            </DialogHeader>
+            {visitSuccess ? (
+              <div className="text-center py-8">
+                <div className="text-green-600 text-6xl mb-4">✓</div>
+                <div className="text-xl font-semibold text-green-600">Visit Scheduled!</div>
+                <div className="text-gray-600 mt-2">We'll contact you soon to confirm the details.</div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <Input 
+                  placeholder="Your Full Name" 
+                  value={visitName} 
+                  onChange={(e) => setVisitName(e.target.value)} 
+                />
+                <Input 
+                  placeholder="Phone Number" 
+                  value={visitPhone} 
+                  onChange={(e) => setVisitPhone(e.target.value)} 
+                />
+                <div>
+                  <div className="text-sm font-medium mb-2">Select Date:</div>
+                  <Calendar 
+                    mode="single" 
+                    selected={visitDate} 
+                    onSelect={setVisitDate} 
+                    className="rounded-md border"
+                  />
+                </div>
+                <Input 
+                  placeholder="Preferred Time (e.g., 3:00 PM)" 
+                  value={visitTime} 
+                  onChange={(e) => setVisitTime(e.target.value)} 
+                />
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                  onClick={handleScheduleVisit}
+                  disabled={!visitDate || !visitTime || !visitName || !visitPhone}
+                >
+                  Schedule Visit
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
-};
+}
 
 export default PropertyDetail;
